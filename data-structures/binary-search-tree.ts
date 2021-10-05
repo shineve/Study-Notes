@@ -278,3 +278,5 @@ class TreeNode {
     this.right = null;
   }
 }
+
+export default BinarySearchTree;

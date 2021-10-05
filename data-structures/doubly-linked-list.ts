@@ -1,17 +1,19 @@
-class LinkedListNode {
+class DoublyLinkedListNode {
   val: number;
-  next: LinkedListNode | null;
+  prev: DoublyLinkedListNode | null;
+  next: DoublyLinkedListNode | null;
 
   constructor(val: number) {
     this.val = val;
+    this.prev = null;
     this.next = null;
   }
 }
 
-class LinkedList {
+class DoublyLinkedList {
   size: number;
-  head: LinkedListNode | null;
-  tail: LinkedListNode | null;
+  head: DoublyLinkedListNode | null;
+  tail: DoublyLinkedListNode | null;
 
   constructor() {
     this.head = null;
@@ -31,9 +33,10 @@ class LinkedList {
   }
 
   addAtHead(val: number): void {
-    const newNode = new LinkedListNode(val);
+    const newNode = new DoublyLinkedListNode(val);
     if (this.head != null) {
       newNode.next = this.head;
+      this.head.prev = newNode;
       this.head = newNode;
     } else {
       this.head = newNode;
@@ -43,13 +46,14 @@ class LinkedList {
   }
 
   addAtTail(val: number): void {
-    const newNode = new LinkedListNode(val);
+    const newNode = new DoublyLinkedListNode(val);
     if (this.tail != null) {
+      newNode.prev = this.tail;
       this.tail.next = newNode;
       this.tail = newNode;
     } else {
-      this.head = newNode;
-      this.tail = this.head;
+      this.tail = newNode;
+      this.head = this.tail;
     }
     this.size += 1;
   }
@@ -63,16 +67,16 @@ class LinkedList {
       this.addAtTail(val);
     } else {
       let counter = 0;
-      let prev = null;
       let curr = this.head;
+      const newNode = new DoublyLinkedListNode(val);
       while (counter < index) {
-        prev = curr;
         curr = curr.next;
         counter += 1;
       }
-      const newNode = new LinkedListNode(val);
-      prev.next = newNode;
+      curr.prev.next = newNode;
+      newNode.prev = curr.prev;
       newNode.next = curr;
+      curr.prev = newNode;
       this.size += 1;
     }
   }
@@ -81,23 +85,24 @@ class LinkedList {
     if (index > this.size - 1 || index < 0) return;
     else if (index === 0) {
       this.head = this.head.next;
-      this.size--;
+      if (this.head) {
+        this.head.prev = null;
+      }
     } else {
       let counter = 0;
-      let prev = null;
       let curr = this.head;
       while (counter < index) {
-        prev = curr;
         curr = curr.next;
         counter += 1;
       }
       if (curr.next) {
-        prev.next = curr.next;
+        curr.prev.next = curr.next;
+        curr.next.prev = curr.prev;
       } else {
-        prev.next = null;
-        this.tail = prev;
+        curr.prev.next = null;
+        this.tail = curr.prev;
       }
-      this.size--;
+      this.size -= 1;
     }
   }
 
@@ -114,4 +119,4 @@ class LinkedList {
   }
 }
 
-export default LinkedList;
+export default DoublyLinkedList;
